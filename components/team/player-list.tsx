@@ -5,9 +5,18 @@ import { useEffect, useRef, useState } from "react";
 import { fetchPlayers } from "@/lib/api";
 import { Player } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { useTeam } from "@/store";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, User } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -30,7 +39,7 @@ export default function PlayerList() {
     useInfiniteQuery({
       queryKey: ["players"],
       queryFn: ({ pageParam = 1 }: { pageParam: number }) =>
-        fetchPlayers(pageParam),
+        fetchPlayers(pageParam.toString()),
       getNextPageParam: (lastPage, allPages) => {
         if (lastPage.meta.next_cursor === null) return undefined;
         const totalPages = Math.ceil(lastPage.meta.next_cursor);
@@ -78,116 +87,153 @@ export default function PlayerList() {
       return;
     }
 
+    if (!teamId) {
+      toast.error("Error", {
+        description:
+          "Please choose a team from the dropdown before adding this player",
+      });
+      return;
+    }
+
     const isPlayerInTeam = teams.some((team) =>
       team.players.some((p) => p.id === player.id)
     );
 
     if (isPlayerInTeam) {
-      toast.error("Error", {
-        description: "Player is already in a team",
+      toast.error("Player Already Assigned", {
+        description: `${player.first_name} ${player.last_name} is already on a team and cannot be added again`,
       });
       setSelectedTeams((prev) => ({ ...prev, [player.id]: "" }));
       return;
     }
-
+    const selectedTeam = teams.find((team) => team.id === teamId);
     addPlayerToTeam(teamId, player);
-    toast.success("Success", {
-      description: "Player added to team",
+    toast.success("Player Added Successfully", {
+      description: `${player.first_name} ${player.last_name} has been added to ${selectedTeam?.name}`,
     });
     setSelectedTeams((prev) => ({ ...prev, [player.id]: "" }));
   };
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center">
-        <Loader2 className="h-6 w-6 animate-spin" />
-        <span className="ml-2">Loading players...</span>
+      <div className="flex justify-center items-center py-8">
+        <Loader2 className="h-6 w-6 animate-spin text-slate-600" />
+        <span className="ml-2 text-slate-700">Loading players...</span>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
-      {data?.pages.map((page, i) => (
-        <div key={i} className="grid gap-4 md:grid-cols-2">
-          {page.data.map((player: Player) => (
-            <Card key={player.id}>
-              <CardHeader>
-                <CardTitle>
+    <div className="space-y-6">
+      <div className="flex items-center gap-3">
+        <User className="w-6 h-6 text-slate-700" />
+        <h2 className="text-xl font-semibold text-slate-900">Players</h2>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {data?.pages.map((page) =>
+          page.data.map((player: Player) => (
+            <Card
+              key={player.id}
+              className="border-0 shadow-md hover:shadow-lg transition-shadow"
+            >
+              <CardHeader className="pb-4">
+                <CardTitle className="text-lg font-semibold text-slate-900">
                   {player.first_name} {player.last_name}
-                  <div className="font-normal mt-2 space-y-2">
-                    <p className="flex gap-2">
-                      <span>Position: </span>
-                      <span>{player.position}</span>
-                    </p>
-                    <p className="flex gap-2">
-                      <span>Height: </span>
-                      <span>{player.height}</span>
-                    </p>
-                    <p className="flex gap-2">
-                      <span>Weight: </span>
-                      <span>{player.weight}</span>
-                    </p>
-                    <p className="flex gap-2">
-                      <span>College: </span>
-                      <span>{player.college}</span>
-                    </p>
-                  </div>
                 </CardTitle>
               </CardHeader>
-              <CardContent className="flex justify-between items-center gap-4">
-                <select
-                  className="w-full p-2 border rounded"
-                  value={selectedTeams[player.id] || ""}
-                  onChange={(e) =>
-                    setSelectedTeams((prev) => ({
-                      ...prev,
-                      [player.id]: e.target.value,
-                    }))
-                  }
-                >
-                  <option value="">Select Team</option>
-                  {teams.map((team) => (
-                    <option key={team.id} value={team.id}>
-                      {team.name}
-                    </option>
-                  ))}
-                </select>
-                <button
-                  className="p-2 text-white rounded w-full max-w-fit bg-gray-500 hover:bg-gray-600"
-                  onClick={() =>
-                    handleAddPlayer(player, selectedTeams[player.id] || "")
-                  }
-                >
-                  Add to Team
-                </button>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="text-slate-500">Position:</span>
+                    <span className="ml-2 font-medium">
+                      {player.position || "N/A"}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-slate-500">Height:</span>
+                    <span className="ml-2 font-medium">
+                      {player.height || "N/A"}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-slate-500">Weight:</span>
+                    <span className="ml-2 font-medium">
+                      {player.weight || "N/A"}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-slate-500">Country:</span>
+                    <span className="ml-2 font-medium">
+                      {player.national_team || "N/A"}
+                    </span>
+                  </div>
+                </div>
+                <Separator />
+                <div className="flex flex-col md:flex-row gap-3">
+                  <Select
+                    value={selectedTeams[player.id] || ""}
+                    onValueChange={(value) =>
+                      setSelectedTeams((prev) => ({
+                        ...prev,
+                        [player.id]: value,
+                      }))
+                    }
+                  >
+                    <SelectTrigger className="flex-1">
+                      <SelectValue placeholder="Select Team" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {teams.length === 0 ? (
+                        <SelectItem value="no" disabled>
+                          No teams available
+                        </SelectItem>
+                      ) : (
+                        teams.map((team) => (
+                          <SelectItem key={team.id} value={team.id}>
+                            {team.name}
+                          </SelectItem>
+                        ))
+                      )}
+                    </SelectContent>
+                  </Select>
+                  <Button
+                    className="bg-slate-600 hover:bg-slate-700"
+                    onClick={() =>
+                      handleAddPlayer(player, selectedTeams[player.id] || "")
+                    }
+                  >
+                    Add to Team
+                  </Button>
+                </div>
               </CardContent>
             </Card>
-          ))}
-        </div>
-      ))}
+          ))
+        )}
+      </div>
+
       <div ref={loadMoreRef} className="h-10" />
+
       {isFetchingNextPage && (
-        <div className="flex justify-center items-center">
-          <Loader2 className="h-6 w-6 animate-spin" />
-          <span className="ml-2">Loading more players...</span>
+        <div className="flex justify-center items-center py-4">
+          <Loader2 className="h-5 w-5 animate-spin text-slate-600" />
+          <span className="ml-2 text-slate-700 text-sm">
+            Loading more players...
+          </span>
         </div>
       )}
 
-      {showModal && (
-        <Dialog open={showModal} onOpenChange={() => setShowModal(false)}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>No Teams Available</DialogTitle>
-            </DialogHeader>
-
-            <p className="mb-4">
-              You need to create a team before you can add players. Please
-              create a team first.
-            </p>
-          </DialogContent>
-        </Dialog>
-      )}
+      <Dialog open={showModal} onOpenChange={setShowModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>No Teams Available</DialogTitle>
+          </DialogHeader>
+          <p className="text-slate-700">
+            You need to create a team before you can add players. Please create
+            a team first.
+          </p>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

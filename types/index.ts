@@ -1,17 +1,15 @@
 export interface Player {
   id: number;
+  position: string;
+  national_team: string | null;
+  height: number;
+  weight: number;
+  birth_date: string;
+  age: string;
+  name: string;
   first_name: string;
   last_name: string;
-  position: string;
-  height: string;
-  weight: string;
-  jersey_number: string | null;
-  college: string | null;
-  country: string;
-  draft_year: number | null;
-  draft_round: number | null;
-  draft_number: number | null;
-  team: PlayerTeam | null;
+  team_ids: number[];
 }
 export interface PlayerTeam {
   id: number;

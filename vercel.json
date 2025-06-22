@@ -1,0 +1,10 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "next build",
+  "outputDirectory": ".next",
+  "installCommand": "npm install",
+  "env": {
+    "API_URL": "https://api.balldontlie.io/epl",
+    "BALLDONTLIE_API_KEY": "d0207225-5b50-4b96-9fdf-69309e434e88"
+  }
+}
