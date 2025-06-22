@@ -1,8 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Team Management Application
+
+A modern team management application built with Next.js, TypeScript, and React that allows users to create teams, manage players, and handle authentication.
+
+## Features
+
+- 🔐 **User Authentication** - Login/logout functionality with local storage persistence
+- 👥 **Team Management** - Create, update, and delete teams
+- 🏃‍♂️ **Player Management** - Add and remove players from teams
+- 📱 **Responsive Design** - Built with modern UI components
+- 🎨 **Modern UI** - Styled with Tailwind CSS and Shadcn UI components
+
+## Tech Stack
+
+- **Framework**: Next.js 15+ with App Router
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **UI Components**: Shadcn UI
+- **Forms**: React Hook Form
+- **State Management**: React Context API
+- **Deployment**: Vercel
+
+## Project Structure
+
+```
+├── app/                    # Next.js app router pages
+├── components/            # React components
+│   ├── auth/             # Authentication components
+│   ├── home/             # Home page components
+│   ├── team/             # Team management components
+│   └── ui/               # Reusable UI components
+├── lib/                  # Utility functions
+├── store/                # Context providers and state management
+│   ├── AuthContext.tsx   # Authentication context
+│   └── TeamContext.tsx   # Team management context
+├── types/                # TypeScript type definitions
+└── public/               # Static assets
+```
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+
+- npm, yarn, or pnpm
+
+### Installation
+
+1. Clone the repository:
+
+```bash
+git clone <repository-url>
+cd team-next
+```
+
+2. Install dependencies:
+
+```bash
+    npm install
+    # or
+    yarn install
+    # or
+    pnpm install
+```
+
+3. Set up environment variables:
+
+```bash
+cp .env.example .env.local
+```
+
+4. Run the development server:
 
 ```bash
 npm run dev
@@ -10,27 +77,98 @@ npm run dev
 yarn dev
 # or
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Usage
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Authentication
 
-## Learn More
+The application uses the [`AuthContext`](store/AuthContext.tsx) for managing user authentication:
 
-To learn more about Next.js, take a look at the following resources:
+- Login with a username
+- Authentication state persists in localStorage
+- Protected routes require authentication
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Team Management
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Teams are managed through the [`TeamContext`](store/TeamContext.tsx) which provides:
 
-## Deploy on Vercel
+- Create new teams
+- Update existing teams
+- Delete teams
+- Add players to teams
+- Remove players from teams
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### API
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The application includes API routes for:
+
+- Player data management (`/api/players`)
+
+## Components
+
+### UI Components
+
+The project uses a collection of reusable UI components built with Radix UI:
+
+- [`Button`](components/ui/button.tsx)
+- [`Card`](components/ui/card.tsx)
+- [`Dialog`](components/ui/dialog.tsx)
+- [`Form`](components/ui/form.tsx)
+- [`Badge`](components/ui/badge.tsx)
+- [`Label`](components/ui/label.tsx)
+
+### Feature Components
+
+- **Login Form** ([`components/auth/login-form.tsx`](components/auth/login-form.tsx))
+- **Team Form** ([`components/team/team-form.tsx`](components/team/team-form.tsx))
+- **Team List** ([`components/team/team-list.tsx`](components/team/team-list.tsx))
+- **Player List** ([`components/team/player-list.tsx`](components/team/player-list.tsx))
+
+## Configuration
+
+### ESLint
+
+The project uses ESLint for code linting with configuration in [`eslint.config.mjs`](eslint.config.mjs).
+
+### TypeScript
+
+TypeScript configuration is set up in [`tsconfig.json`](tsconfig.json) with strict type checking.
+
+### Tailwind CSS
+
+Styling is configured through [`postcss.config.mjs`](postcss.config.mjs) and uses Tailwind CSS for utility-first styling.
+
+## Deployment
+
+The application is configured for deployment on Vercel with settings in [`vercel.json`](vercel.json).
+
+To deploy:
+
+1. Push your code to a Git repository
+2. Connect your repository to Vercel
+3. Deploy automatically on every push to main branch
+
+## Scripts
+
+```bash
+# Development
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run start        # Start production server
+npm run lint         # Run ESLint
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
+
+## License
+
+This project is licensed under the MIT License.

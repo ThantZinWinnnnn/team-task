@@ -119,7 +119,7 @@ export default function TeamList() {
               <DialogDescription className="text-gray-600 leading-relaxed">
                 Are you sure you want to delete the team{" "}
                 <span className="font-semibold text-gray-900 bg-gray-100 px-2 py-1 rounded">
-                  "{teams.find((t) => t.id === teamToDelete)?.name}"
+                  {teams.find((t) => t.id === teamToDelete)?.name}
                 </span>
                 ?
               </DialogDescription>

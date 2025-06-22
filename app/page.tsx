@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Providers from "./providers";
 import HomePage from "@/components/home";
 

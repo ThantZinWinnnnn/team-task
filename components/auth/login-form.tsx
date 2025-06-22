@@ -19,7 +19,6 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-  CardFooter,
 } from "@/components/ui/card";
 import { User } from "lucide-react";
 import { useAuth } from "@/store";
